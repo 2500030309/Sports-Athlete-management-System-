@@ -8,6 +8,7 @@ import sportsanalytics.co2.BTree;
 import sportsanalytics.co2.BPlusTree;
 import sportsanalytics.co3.Graph;
 import sportsanalytics.util.SampleData;
+import sportsanalytics.util.DatabaseHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,8 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         // Initialize Shared Data
-        this.athletes = new ArrayList<>(SampleData.getSampleAthletes());
+        DatabaseHelper.initializeDatabase(SampleData.getSampleAthletes());
+        this.athletes = new ArrayList<>(DatabaseHelper.loadAthletes());
         this.teams = new ArrayList<>(SampleData.getSampleTeams());
         
         this.bst = new AthleteBST();
@@ -210,6 +212,7 @@ public class MainFrame extends JFrame {
         avl.insert(a);
         bTree.insert(a.getAthleteId());
         bPlusTree.insert(a.getAthleteId());
+        DatabaseHelper.insertAthlete(a);
     }
 
     public void removeAthlete(Athlete a) {
@@ -218,6 +221,7 @@ public class MainFrame extends JFrame {
         avl.delete(a);
         // Reinstate BTree & BPlusTree from scratch to clean deleted keys easily
         SampleData.populateCO2(athletes, bTree, bPlusTree);
+        DatabaseHelper.deleteAthlete(a.getAthleteId());
     }
 }
 
